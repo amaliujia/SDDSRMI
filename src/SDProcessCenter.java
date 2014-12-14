@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 /**
  * Created by amaliujia on 14-11-24.
  */
@@ -5,7 +7,7 @@ public class SDProcessCenter {
 
     private static final int defaultPort = 16640;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if(args.length == 0){
             //start master
             SDMasterNode master = new SDMasterNode();
