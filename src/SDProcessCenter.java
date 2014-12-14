@@ -18,7 +18,5 @@ public class SDProcessCenter {
         }else{
             System.out.println("Arguments wrong");
         }
-
     }
-
 }
