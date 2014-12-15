@@ -5,7 +5,9 @@ import java.io.IOException;
  */
 public class SDProcessCenter {
 
+    // default port, used as listener monitoring port
     private static final int defaultPort = 16640;
+
 
     public static void main(String[] args) throws IOException {
         if(args.length == 0){
