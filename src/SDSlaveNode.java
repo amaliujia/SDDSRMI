@@ -1,5 +1,5 @@
 /**
- * Created by amaliujia on 14-12-13.
+ * KANG.
  */
 public class SDSlaveNode {
 }
