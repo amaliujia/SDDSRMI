@@ -35,10 +35,9 @@ public class SDMigratableProcess implements MigratableProcesses
                 if (line.contains(query)) {
                     out.println(line);
                 }
-
                 // Make grep take longer so that we don't require extremely large files for interesting results
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(800);
                 } catch (InterruptedException e) {
                     // ignore it
                 }

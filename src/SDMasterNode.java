@@ -57,7 +57,7 @@ public class SDMasterNode {
             }else if(args[0].equals("ls")){
                synchronized (slaveList){
                    for(int i = 0; i < slaveList.size(); i++){
-                       System.out.println(slaveList.toString());
+                       System.out.println("ID: " + i + " " + slaveList.toString());
                    }
                }
             }
