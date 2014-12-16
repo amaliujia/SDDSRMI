@@ -1,11 +1,7 @@
-import java.io.PrintStream;
-import java.io.EOFException;
 import java.io.DataInputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.IOException;
-import java.lang.Thread;
-import java.lang.InterruptedException;
+import java.io.PrintStream;
 
 public class SDMigratableProcess implements MigratableProcesses
 {
@@ -18,7 +14,7 @@ public class SDMigratableProcess implements MigratableProcesses
     public SDMigratableProcess(String args[]) throws Exception
     {
         if (args.length != 3) {
-            System.out.println("usage: GrepProcess <queryString> <inputFile> <outputFile>");
+            System.out.println("usage: SDProcess <queryString> <inputFile> <outputFile>");
             throw new Exception("Invalid Arguments");
         }
 
@@ -52,7 +48,7 @@ public class SDMigratableProcess implements MigratableProcesses
         } catch (EOFException e) {
             //End of File
         } catch (IOException e) {
-            System.out.println ("GrepProcess: Error: " + e);
+            System.out.println ("SDProcess: Error: " + e);
         }
         suspending = false;
     }
