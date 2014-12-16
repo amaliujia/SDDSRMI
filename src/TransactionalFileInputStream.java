@@ -57,7 +57,6 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
 
     }
 
-    //TODO: check spelling
     public boolean isMigaratable(){
          if(migratable){
              return true;

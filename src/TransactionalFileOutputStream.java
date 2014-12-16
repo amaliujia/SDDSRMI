@@ -8,7 +8,7 @@ public class TransactionalFileOutputStream extends OutputStream implements Seria
     private String fileName;
     private RandomAccessFile randomAccessFile;
     private long offset;
-    private boolean migaratable;
+    private boolean migratable;
 
     public TransactionalFileOutputStream(String arg, boolean b){
          this.fileName = arg;
@@ -23,15 +23,15 @@ public class TransactionalFileOutputStream extends OutputStream implements Seria
          }
 
          offset = 0L;
-         migaratable = false;
+         migratable = false;
 
     }
 
 
     public void write(int b) throws IOException {
-        if(migaratable){
+        if(migratable){
             this.randomAccessFile = new RandomAccessFile(this.fileName, "rws");
-            migaratable = false;
+            migratable = false;
         }
 
         int readBytes;
@@ -54,9 +54,8 @@ public class TransactionalFileOutputStream extends OutputStream implements Seria
 
     }
 
-    //TODO: check spelling
     public boolean isMigaratable(){
-        if(migaratable){
+        if(migratable){
             return true;
         }
         return false;
