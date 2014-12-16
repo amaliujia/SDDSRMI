@@ -1,7 +1,4 @@
-import java.io.DataInputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 
 public class SDMigratableProcess implements MigratableProcesses
 {
@@ -25,8 +22,9 @@ public class SDMigratableProcess implements MigratableProcesses
 
     public void run()
     {
-        PrintStream out = new PrintStream(outFile);
-        DataInputStream in = new DataInputStream(inFile);
+        InputStreamReader streamReader = new InputStreamReader(inFile);
+        BufferedReader in = new BufferedReader(streamReader);
+        PrintWriter out = new PrintWriter(outFile);
 
         try {
             while (!suspending) {
