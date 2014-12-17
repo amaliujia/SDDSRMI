@@ -89,6 +89,8 @@ public class SDSlaveNode {
                 ObjectOutputStream outObj = new ObjectOutputStream(out);
                 outObj.writeObject(processInfo.process);
                 outObj.flush();
+                outObj.close();
+                out.close();
             }
             else if (args[0].equals("exit")){
 
