@@ -13,7 +13,7 @@ public class TransactionalFileOutputStream extends OutputStream implements Seria
     public TransactionalFileOutputStream(String arg, boolean b){
          this.fileName = arg;
          try{
-             this.randomAccessFile = new RandomAccessFile(this.fileName, "rws");
+             this.randomAccessFile = new RandomAccessFile(this.fileName, "rw");
          } catch (FileNotFoundException e) {
              System.err.println("Cannot find file " + this.fileName + " in file system");
          } catch (IllegalArgumentException e){

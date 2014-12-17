@@ -57,4 +57,9 @@ public class SDSlave {
     public String toString(){
        return "INetAddress:\t" + address + " \tport:\t" + port;
     }
+
+    public PrintWriter getWriter(){
+        return out;
+    }
+
 }

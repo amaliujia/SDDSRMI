@@ -1,3 +1,4 @@
+import javax.rmi.CORBA.Util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,7 +54,11 @@ public class SDMasterNode {
             }else if(args[0].equals("exit")){
                 SDUtil.fatalError("");
             }else if(args[0].equals("ps")){
-                //list processes
+                synchronized (slaveList){
+                    for(int i = 0; i < slaveList.size(); i++){
+                        SDSlave slave = slaveList.get(i);
+                    }
+                }
             }else if(args[0].equals("ls")){
                synchronized (slaveList){
                    for(int i = 0; i < slaveList.size(); i++){
@@ -69,7 +74,7 @@ public class SDMasterNode {
             else if(args[0].equals("start") && args.length > 1){
                 int slaveID = -1;
                 try{
-                    slaveID = Integer.parseInt(args[2]);
+                    slaveID = Integer.parseInt(args[1]);
                 }catch(Exception e){
                     System.err.println("wrong format of start command");
                 }
@@ -78,7 +83,9 @@ public class SDMasterNode {
                     continue;
                 }else{
                     SDSlave slave = this.slaveList.get(slaveID);
-                    //TODO: write something to picked slave.
+                    PrintWriter out = slave.getWriter();
+                    out.write("start " + SDUtil.inputFilePath + " " + SDUtil.outputFilePath + "\n");
+                    out.flush();
                 }
 
             }else{
@@ -128,6 +135,7 @@ public class SDMasterNode {
             while(true) {
                 try {
                     Socket sock = listener.accept();
+                    System.out.println("New slave connected");
                     SDSlave aSlave = new SDSlave(sock.getInetAddress(), sock.getPort());
                     aSlave.setReader(new BufferedReader(new InputStreamReader(sock.getInputStream())));
                     aSlave.setWriter(new PrintWriter(sock.getOutputStream()));

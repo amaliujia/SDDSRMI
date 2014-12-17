@@ -6,7 +6,7 @@ import static java.lang.System.exit;
 public class SDUtil {
 
     static String inputFilePath = "input/WhatIf.txt";
-    static String outputFilePath = "output/WahtIf.txt";
+    static String outputFilePath = "whatIf.txt";
 
     static void fatalError (String message) {
         System.err.println (message);
