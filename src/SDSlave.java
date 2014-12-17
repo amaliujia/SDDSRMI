@@ -8,8 +8,8 @@ import java.net.InetAddress;
 public class SDSlave {
     private InetAddress address;
     private int port;
-    private BufferedReader in;
-    private PrintWriter out;
+    public BufferedReader in;
+    public PrintWriter out;
     private int slaveID;
 
     /**

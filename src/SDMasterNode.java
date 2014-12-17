@@ -57,6 +57,18 @@ public class SDMasterNode {
                 synchronized (slaveList){
                     for(int i = 0; i < slaveList.size(); i++){
                         SDSlave slave = slaveList.get(i);
+                        PrintWriter out = slave.getWriter();
+                        out.println("ps");
+                        out.flush();
+
+                        try {
+                            String line = slave.in.readLine();
+                            if(line != null){
+                                System.out.println(line);
+                            }
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }
             }else if(args[0].equals("ls")){
@@ -87,6 +99,8 @@ public class SDMasterNode {
                     out.write("start " + SDUtil.inputFilePath + " " + SDUtil.outputFilePath + "\n");
                     out.flush();
                 }
+
+            }else if(args[0].equals("miga")){
 
             }else{
                 promptPrinter("help");
