@@ -74,7 +74,7 @@ public class SDMasterNode {
             else if(args[0].equals("start") && args.length > 1){
                 int slaveID = -1;
                 try{
-                    slaveID = Integer.parseInt(args[2]);
+                    slaveID = Integer.parseInt(args[1]);
                 }catch(Exception e){
                     System.err.println("wrong format of start command");
                 }
@@ -83,9 +83,9 @@ public class SDMasterNode {
                     continue;
                 }else{
                     SDSlave slave = this.slaveList.get(slaveID);
-                    //TODO: write something to picked slave.
                     PrintWriter out = slave.getWriter();
                     out.write("start " + SDUtil.inputFilePath + " " + SDUtil.outputFilePath + "\n");
+                    out.flush();
                 }
 
             }else{
@@ -135,6 +135,7 @@ public class SDMasterNode {
             while(true) {
                 try {
                     Socket sock = listener.accept();
+                    System.out.println("New slave connected");
                     SDSlave aSlave = new SDSlave(sock.getInetAddress(), sock.getPort());
                     aSlave.setReader(new BufferedReader(new InputStreamReader(sock.getInputStream())));
                     aSlave.setWriter(new PrintWriter(sock.getOutputStream()));
