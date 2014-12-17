@@ -16,7 +16,8 @@ public class SDProcessCenter {
             master.startService(defaultPort);
         }else if(args.length == 2){
             //start salve
-
+            SDSlaveNode slave = new SDSlaveNode("128.237.191.211", defaultPort);
+            slave.connect();
         }else{
             System.out.println("Arguments wrong");
         }
