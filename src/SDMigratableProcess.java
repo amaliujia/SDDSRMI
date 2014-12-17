@@ -26,16 +26,16 @@ public class SDMigratableProcess implements MigratableProcesses
     {
         InputStreamReader streamReader = new InputStreamReader(inFile);
         BufferedReader in = new BufferedReader(streamReader);
-        PrintWriter out = new PrintWriter(outFile);
+        DataOutputStream out = new DataOutputStream((outFile));
 
         try {
             while (!suspending) {
                 String line = in.readLine();
-
                 if (line == null) break;
-
                // if (line.contains(query)) {
-                    out.println(line);
+                System.out.println(line);
+                out.writeBytes(line);
+                // System.out.println(line);
                // }
                 // Make grep take longer so that we don't require extremely large files for interesting results
                 /*try {
@@ -51,6 +51,15 @@ public class SDMigratableProcess implements MigratableProcesses
         }
         suspending = false;
         finished = true;
+        //out.flush();
+        try {
+            out.close();
+        }
+        catch (IOException ex){
+            System.out.println("writing failure...");
+        }
+        //outFile.closeFileStream();
+        System.out.println("finish writing...");
     }
 
     public void suspend()

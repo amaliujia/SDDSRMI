@@ -176,7 +176,8 @@ public class SDSlaveNode {
         this.processTable.put(this.processID, processInfo);
         this.processID++;
         newThread.start();
-        System.out.println("Start writing...");
+        pw.println("Start writing...");
+        pw.flush();
     }
 
 
