@@ -1,3 +1,4 @@
+import javax.rmi.CORBA.Util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,7 +54,11 @@ public class SDMasterNode {
             }else if(args[0].equals("exit")){
                 SDUtil.fatalError("");
             }else if(args[0].equals("ps")){
-                //list processes
+                synchronized (slaveList){
+                    for(int i = 0; i < slaveList.size(); i++){
+                        SDSlave slave = slaveList.get(i);
+                    }
+                }
             }else if(args[0].equals("ls")){
                synchronized (slaveList){
                    for(int i = 0; i < slaveList.size(); i++){
@@ -79,6 +84,8 @@ public class SDMasterNode {
                 }else{
                     SDSlave slave = this.slaveList.get(slaveID);
                     //TODO: write something to picked slave.
+                    PrintWriter out = slave.getWriter();
+                    out.write("start " + SDUtil.inputFilePath + " " + SDUtil.outputFilePath + "\n");
                 }
 
             }else{
