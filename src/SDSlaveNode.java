@@ -59,6 +59,10 @@ public class SDSlaveNode {
             try {
                 System.out.println("Waiting...");
                 command = bs.readLine();
+                if (command == null){
+                    System.out.println("Interrupt!");
+                    System.exit(0);
+                }
                 System.out.println("Waiting...");
                 System.out.println(command);
             }
@@ -78,7 +82,7 @@ public class SDSlaveNode {
                 suspendProcess(args);
             }
             else if (args[0].equals("start")){
-                System.out.println("Successfuly start a new process");
+                System.out.println("Successfully start a new process");
                 startNewProcess(args);
             }
 
@@ -94,6 +98,7 @@ public class SDSlaveNode {
             else{
                 pw.write("$ " + processID +  "   " + singleProcess.status +  "\n");
             }
+            pw.flush();
         }
     }
 
@@ -176,8 +181,8 @@ public class SDSlaveNode {
         this.processTable.put(this.processID, processInfo);
         this.processID++;
         newThread.start();
-        pw.println("Start writing...");
-        pw.flush();
+        //pw.println("Start writing...");
+        //pw.flush();
     }
 
 

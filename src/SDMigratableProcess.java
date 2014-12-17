@@ -26,23 +26,23 @@ public class SDMigratableProcess implements MigratableProcesses
     {
         InputStreamReader streamReader = new InputStreamReader(inFile);
         BufferedReader in = new BufferedReader(streamReader);
-        DataOutputStream out = new DataOutputStream((outFile));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(((outFile))));
 
         try {
             while (!suspending) {
                 String line = in.readLine();
                 if (line == null) break;
                // if (line.contains(query)) {
-                System.out.println(line);
-                out.writeBytes(line);
+                //System.out.println(line);
+                out.write(line);
                 // System.out.println(line);
                // }
                 // Make grep take longer so that we don't require extremely large files for interesting results
-                /*try {
+                try {
                    Thread.sleep(800);
                 } catch (InterruptedException e) {
                     // ignore it
-                }*/
+                }
             }
         } catch (EOFException e) {
             //End of File
