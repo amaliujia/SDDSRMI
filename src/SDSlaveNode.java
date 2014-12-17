@@ -4,8 +4,10 @@
 
 import sun.jvm.hotspot.debugger.ProcessInfo;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.*;
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.TreeMap;
 public class SDSlaveNode {
@@ -14,7 +16,7 @@ public class SDSlaveNode {
     private String masterAddress;
     private int masterPort;
     private Socket socket;
-    private TreeMap<Integer, SDprocessInfo> processTable = new TreeMap<Integer, SDprocessInfo>();
+    private TreeMap<Integer, SDProcessInfo> processTable = new TreeMap<Integer, SDProcessInfo>();
     private int processID;
 
     public SDSlaveNode(String masterAddress, int masterPort){
@@ -50,61 +52,121 @@ public class SDSlaveNode {
 
     public void slaveService()throws IOException, ClassNotFoundException{
         String[] args = null;
-        String command;
-        while((command = bs.readLine())!= null ){
+        String command = null;
+        while(true){
+            try {
+                command = bs.readLine();
+            }
+            catch(IOException ex) {
+                    System.exit(0);
+            }
             args = command.split(" ");
             if (args[0].equals("ps")){
-                for (Integer processID : processTable.keySet()){
-                    SDprocessInfo singleProcess = processTable.get(processID);
-                    if (singleProcess.process.finished()){
-                        pw.write("$ " + processID +  "   " + SDProcessStatus.TERMINATED + "\n");
-                    }
-                    else{
-                        pw.write("$ " + processID +  "   " + singleProcess.status +  "\n");
-                    }
-                }
+                printState(args);
             }
             else if (args[0].equals("resume")){
-                FileInputStream in = new FileInputStream(args[1] + args[2] + args[3] + ".obj");
-                ObjectInputStream inObj = new ObjectInputStream(in);
-                SDMigratableProcess mpIn = (SDMigratableProcess)inObj.readObject();
-                in.close();
-                inObj.close();
-                Thread newProcess = new Thread(mpIn);
-                SDprocessInfo processInfo = new SDprocessInfo(SDProcessStatus.RUNNING, mpIn);
-                this.processTable.put(this.processID, processInfo);
-                this.processID++;
-                newProcess.start();
+                resumeProcess(args);
             }
-            else if (args[0].equals("suspend")){ // suspend
-                int migratableProcessID = -1;
-                try{
-                    migratableProcessID = Integer.parseInt(args[1]);
-                }
-                catch(NumberFormatException ex){
-                    System.err.println("process not found! Please check.");
-                }
-                SDprocessInfo processInfo = this.processTable.get(migratableProcessID);
-                FileOutputStream out = new FileOutputStream(args[1] + ".obj");
-                ObjectOutputStream outObj = new ObjectOutputStream(out);
-                outObj.writeObject(processInfo.process);
-                outObj.flush();
-                outObj.close();
-                out.close();
+            else if (args[0].equals("suspend")){
+                suspendProcess(args);
             }
-            else if (args[0].equals("exit")){
-
-            }
-            else if (args[0].equals("")){
-
+            else if (args[0].equals("start")){
+                startNewProcess(args);
             }
 
         }
-
-
-
     }
 
+    public void printState(String[] args){
+        for (Integer processID : processTable.keySet()){
+            SDProcessInfo singleProcess = processTable.get(processID);
+            if (singleProcess.process.finished()){
+                pw.write("$ " + processID +  "   " + SDProcessStatus.TERMINATED + "\n");
+            }
+            else{
+                pw.write("$ " + processID +  "   " + singleProcess.status +  "\n");
+            }
+        }
+    }
+
+    public void resumeProcess(String[] args) throws IOException, ClassNotFoundException{
+        FileInputStream in = new FileInputStream(args[1] + args[2] + args[3] + ".obj");
+        ObjectInputStream inObj = new ObjectInputStream(in);
+        SDMigratableProcess mpIn = (SDMigratableProcess)inObj.readObject();
+        in.close();
+        inObj.close();
+        Thread newProcess = new Thread(mpIn);
+        SDProcessInfo processInfo = new SDProcessInfo(SDProcessStatus.RUNNING, mpIn);
+        this.processTable.put(this.processID, processInfo);
+        this.processID++;
+        newProcess.start();
+    }
+
+    public void suspendProcess(String[] args) throws IOException{
+        int migratableProcessID = -1;
+        try{
+            migratableProcessID = Integer.parseInt(args[1]);
+        }
+        catch(NumberFormatException ex){
+            System.err.println("processID error! Please check.");
+        }
+        SDProcessInfo processInfo = this.processTable.get(migratableProcessID);
+        if (processInfo == null){
+            System.err.print("process not found! Please check.");
+        }
+        processInfo.process.suspend();
+        processInfo.status = SDProcessStatus.SUSPENDING;
+        FileOutputStream out = new FileOutputStream(args[1] + ".obj");
+        ObjectOutputStream outObj = new ObjectOutputStream(out);
+        outObj.writeObject(processInfo.process);
+        outObj.flush();
+        outObj.close();
+        out.close();
+        pw.print("suspending finished\n"); // ack signal
+        pw.flush();
+        this.processTable.remove(processID);
+    }
+
+    public void startNewProcess(String[] args) throws ClassNotFoundException{
+        SDMigratableProcess newProcess = null;
+        try {
+            Class<SDMigratableProcess> newProcessClass = (Class<SDMigratableProcess>) Class.forName(args[2]);
+            String processArgs[] = Arrays.copyOfRange(args, 3, args.length);
+            newProcess = newProcessClass.getConstructor(String[].class).newInstance(processArgs);
+        }
+        catch (ClassNotFoundException e) {
+            System.out.println("Could not find class " + args[2]);
+            e.printStackTrace();
+            return;
+        } catch (SecurityException e) {
+            System.out.println("Security Exception getting constructor for "
+                    + args[2]);
+            return;
+        } catch (NoSuchMethodException e) {
+            System.out.println("Could not find proper constructor for "
+                    + args[2]);
+            return;
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal arguments for " + args[2]);
+            return;
+        } catch (InstantiationException e) {
+            System.out.println("Instantiation Exception for " + args[2]);
+            return;
+        } catch (IllegalAccessException e) {
+            System.out.println("IIlegal access exception for " + args[2]);
+            return;
+        } catch (InvocationTargetException e) {
+            System.out.println("Invocation target exception for " + args[2]);
+            return;
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
+        Thread newThread = new Thread(newProcess);
+        SDProcessInfo processInfo = new SDProcessInfo(SDProcessStatus.RUNNING, newProcess);
+        this.processTable.put(this.processID, processInfo);
+        this.processID++;
+        newThread.start();
+    }
 
 
 }
