@@ -130,8 +130,8 @@ public class SDSlaveNode {
     public void startNewProcess(String[] args) throws ClassNotFoundException{
         SDMigratableProcess newProcess = null;
         try {
-            Class<SDMigratableProcess> newProcessClass = (Class<SDMigratableProcess>) Class.forName(args[2]);
-            String processArgs[] = Arrays.copyOfRange(args, 3, args.length);
+            Class<SDMigratableProcess> newProcessClass = (Class<SDMigratableProcess>) Class.forName("process" + processID);
+            String processArgs[] = Arrays.copyOfRange(args, 1, args.length); // three parameter
             newProcess = newProcessClass.getConstructor(String[].class).newInstance(processArgs);
         }
         catch (ClassNotFoundException e) {
