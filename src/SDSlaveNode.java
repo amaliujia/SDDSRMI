@@ -32,9 +32,9 @@ public class SDSlaveNode {
 
         }
         catch(IOException ex) {
-            System.out.println("MasterAddress or MasterPort is wrong\n");
+            System.out.println("MasterAddress or MasterPort is wrong");
         }
-        System.out.print("Connection success\n");
+        System.out.println("Connection success");
     }
 
     public void disconnect(){
@@ -47,22 +47,23 @@ public class SDSlaveNode {
         {
             System.out.println("disConnection error\n");
         }
-        System.out.print("disConnection success\n");
+        System.out.println("disConnection success");
     }
 
 
     public void slaveService()throws IOException, ClassNotFoundException{
         String[] args = null;
         String command = null;
-        System.out.println("Service start...\n");
+        System.out.println("Service start...");
         while(true){
             try {
-                System.out.println("Waiting...\n");
+                System.out.println("Waiting...");
                 command = bs.readLine();
-                System.out.println("Waiting...\n");
+                System.out.println("Waiting...");
                 System.out.println(command);
             }
             catch(IOException ex) {
+                System.out.println("Exit!");
                     System.exit(0);
             }
             args = command.split(" ");
@@ -137,8 +138,10 @@ public class SDSlaveNode {
     public void startNewProcess(String[] args) throws ClassNotFoundException{
         SDMigratableProcess newProcess = null;
         try {
+            System.out.println(args[0] + " " + args[1] + " " + args[2]);
             Class<SDMigratableProcess> newProcessClass = (Class<SDMigratableProcess>) Class.forName(SDMigratableProcess.class.getName());
-            String processArgs[] = Arrays.copyOfRange(args, 1, args.length); // three parameter
+            Object[] processArgs = {Arrays.copyOfRange(args, 1, 3)}; // three parameter
+            //System.out.println(processArgs[0] + " " + processArgs[1]);
             newProcess = newProcessClass.getConstructor(String[].class).newInstance(processArgs);
         }
         catch (ClassNotFoundException e) {
