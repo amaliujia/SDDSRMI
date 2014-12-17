@@ -9,7 +9,7 @@ public class SDProcessCenter {
     private static final int defaultPort = 16640;
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         if(args.length == 0){
             //start master
             SDMasterNode master = new SDMasterNode();
@@ -18,6 +18,7 @@ public class SDProcessCenter {
             //start salve
             SDSlaveNode slave = new SDSlaveNode(args[0], Integer.parseInt(args[1]));
             slave.connect();
+            slave.slaveService();
         }else{
             System.out.println("Arguments wrong");
         }

@@ -29,11 +29,12 @@ public class SDSlaveNode {
             socket = new Socket(masterAddress, masterPort);
             bs = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+
         }
         catch(IOException ex) {
-            System.out.println("MasterAddress or MasterPort is wrong");
+            System.out.println("MasterAddress or MasterPort is wrong\n");
         }
-        System.out.print("Connection success");
+        System.out.print("Connection success\n");
     }
 
     public void disconnect(){
@@ -44,23 +45,28 @@ public class SDSlaveNode {
         }
         catch (IOException ex)
         {
-            System.out.println("disconnection error");
+            System.out.println("disConnection error\n");
         }
-        System.out.print("disConnection success");
+        System.out.print("disConnection success\n");
     }
 
 
     public void slaveService()throws IOException, ClassNotFoundException{
         String[] args = null;
         String command = null;
+        System.out.println("Service start...\n");
         while(true){
             try {
+                System.out.println("Waiting...\n");
                 command = bs.readLine();
+                System.out.println("Waiting...\n");
+                System.out.println(command);
             }
             catch(IOException ex) {
                     System.exit(0);
             }
             args = command.split(" ");
+            System.out.println(args[0]);
             if (args[0].equals("ps")){
                 printState(args);
             }
@@ -71,6 +77,7 @@ public class SDSlaveNode {
                 suspendProcess(args);
             }
             else if (args[0].equals("start")){
+                System.out.println("Successfuly start a new process");
                 startNewProcess(args);
             }
 
@@ -130,7 +137,7 @@ public class SDSlaveNode {
     public void startNewProcess(String[] args) throws ClassNotFoundException{
         SDMigratableProcess newProcess = null;
         try {
-            Class<SDMigratableProcess> newProcessClass = (Class<SDMigratableProcess>) Class.forName("process" + processID);
+            Class<SDMigratableProcess> newProcessClass = (Class<SDMigratableProcess>) Class.forName(SDMigratableProcess.class.getName());
             String processArgs[] = Arrays.copyOfRange(args, 1, args.length); // three parameter
             newProcess = newProcessClass.getConstructor(String[].class).newInstance(processArgs);
         }
@@ -166,6 +173,7 @@ public class SDSlaveNode {
         this.processTable.put(this.processID, processInfo);
         this.processID++;
         newThread.start();
+        System.out.println("Start writing...");
     }
 
 

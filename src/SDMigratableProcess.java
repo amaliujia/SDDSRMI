@@ -11,14 +11,14 @@ public class SDMigratableProcess implements MigratableProcesses
 
     public SDMigratableProcess(String args[]) throws Exception
     {
-        if (args.length != 3) {
+      /*  if (args.length != 3) {
             System.out.println("usage: SDProcess <queryString> <inputFile> <outputFile>");
             throw new Exception("Invalid Arguments");
         }
-
-        query = args[0];
-        inFile = new TransactionalFileInputStream(args[1]);
-        outFile = new TransactionalFileOutputStream(args[2], false);
+*/
+       // query = args[0];
+        inFile = new TransactionalFileInputStream(args[0]);
+        outFile = new TransactionalFileOutputStream(args[1], false);
         finished = false;
     }
 
@@ -38,11 +38,11 @@ public class SDMigratableProcess implements MigratableProcesses
                     out.println(line);
                 }*/
                 // Make grep take longer so that we don't require extremely large files for interesting results
-                try {
-                    Thread.sleep(800);
+                /*try {
+                   Thread.sleep(800);
                 } catch (InterruptedException e) {
                     // ignore it
-                }
+                }*/
             }
         } catch (EOFException e) {
             //End of File
