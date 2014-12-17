@@ -36,6 +36,7 @@ public class TransactionalFileOutputStream extends OutputStream implements Seria
 
         int readBytes;
         this.randomAccessFile.seek(offset);
+        offset++;
         try {
             this.randomAccessFile.write(b);
         }catch (IOException e){
