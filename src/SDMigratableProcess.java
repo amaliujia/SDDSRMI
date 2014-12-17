@@ -5,6 +5,7 @@ public class SDMigratableProcess implements MigratableProcesses
     private TransactionalFileInputStream  inFile;
     private TransactionalFileOutputStream outFile;
     private String query;
+    private boolean finished;
 
     private volatile boolean suspending;
 
@@ -18,6 +19,7 @@ public class SDMigratableProcess implements MigratableProcesses
         query = args[0];
         inFile = new TransactionalFileInputStream(args[1]);
         outFile = new TransactionalFileOutputStream(args[2], false);
+        finished = false;
     }
 
     public void run()
@@ -48,12 +50,17 @@ public class SDMigratableProcess implements MigratableProcesses
             System.out.println ("SDProcess: Error: " + e);
         }
         suspending = false;
+        finished = true;
     }
 
     public void suspend()
     {
         suspending = true;
         while (suspending);
+    }
+
+    public boolean finished() {
+        return this.finished;
     }
 
 }
