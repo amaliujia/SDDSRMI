@@ -74,7 +74,7 @@ public class SDMasterNode {
             }else if(args[0].equals("ls")){
                synchronized (slaveList){
                    for(int i = 0; i < slaveList.size(); i++){
-                       System.out.println("ID: " + i + " " + slaveList.toString());
+                       System.out.println("ID: " + i + " " + slaveList.get(i).toString());
                    }
                }
             }
@@ -101,6 +101,15 @@ public class SDMasterNode {
                 }
 
             }else if(args[0].equals("miga")){
+
+            }else if(args[0].equals("test")){
+                int i = 0;
+                SDSlave slave = slaveList.get(0);
+                while(i < 10){
+                    slave.out.write(i + "\n");
+                    i++;
+                    slave.out.flush();
+                }
 
             }else{
                 promptPrinter("help");
