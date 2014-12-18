@@ -67,6 +67,9 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
     }
 
 
+    public void setMigaratable(boolean flag){
+        this.migratable = flag;
+    }
 
     public long getOffset(){
         return offset;

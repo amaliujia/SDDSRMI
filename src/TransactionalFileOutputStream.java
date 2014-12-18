@@ -64,6 +64,10 @@ public class TransactionalFileOutputStream extends OutputStream implements Seria
         return false;
     }
 
+    public void setMigaratable(boolean flag){
+        this.migratable = flag;
+    }
+
     public long getOffset(){
         return offset;
     }

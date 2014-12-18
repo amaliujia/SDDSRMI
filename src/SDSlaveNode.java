@@ -129,26 +129,32 @@ public class SDSlaveNode {
 
     public void suspendProcess(String[] args) throws IOException{
         int migratableProcessID = -1;
+
         try{
             migratableProcessID = Integer.parseInt(args[1]);
         }
         catch(NumberFormatException ex){
             System.err.println("processID error! Please check.");
         }
+
         SDProcessInfo processInfo = this.processTable.get(migratableProcessID);
         if (processInfo == null){
             System.err.print("process not found! Please check.");
         }
         processInfo.process.suspend();
         processInfo.status = SDProcessStatus.SUSPENDING;
+
+
         FileOutputStream out = new FileOutputStream(args[1] + ".obj");
         ObjectOutputStream outObj = new ObjectOutputStream(out);
         outObj.writeObject(processInfo.process);
         outObj.flush();
         outObj.close();
         out.close();
+
         pw.print("ACK\n"); // ack signal
         pw.flush();
+
         this.processTable.remove(migratableProcessID);
     }
 

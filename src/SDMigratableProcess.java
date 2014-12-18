@@ -67,9 +67,24 @@ public class SDMigratableProcess implements MigratableProcesses
     public void suspend()
     {
         suspending = true;
+
+        try {
+            close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+
         while (suspending){
             //System.out.println("**");
         };
+    }
+
+    private void close() throws IOException {
+        inFile.close();
+        outFile.close();
+        inFile.setMigaratable(true);
+        outFile.setMigaratable(true);
     }
 
     public boolean finished() {
