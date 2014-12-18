@@ -6,7 +6,7 @@ import java.io.*;
  */
 public class TransactionalFileOutputStream extends OutputStream implements Serializable {
     private String fileName;
-    private RandomAccessFile randomAccessFile;
+    private transient RandomAccessFile randomAccessFile;
     private long offset;
     private boolean migratable;
 
@@ -29,12 +29,13 @@ public class TransactionalFileOutputStream extends OutputStream implements Seria
 
 
     public void write(int b) throws IOException {
-        if(migratable){
+        if(migratable || this.randomAccessFile == null){
             this.randomAccessFile = new RandomAccessFile(this.fileName, "rws");
             migratable = false;
         }
 
         int readBytes;
+        System.out.println(offset);
         this.randomAccessFile.seek(offset);
         offset++;
         try {

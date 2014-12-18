@@ -37,6 +37,7 @@ public class SDSlaveNode {
             socket = new Socket(masterAddress, masterPort);
             bs = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+            slavePort = socket.getLocalPort();
         }
         catch(IOException ex) {
             System.out.println("MasterAddress or MasterPort is wrong");
@@ -102,25 +103,27 @@ public class SDSlaveNode {
             if (singleProcess.process.finished()){
                 pw.write("$ " + processID +  "   " + SDProcessStatus.TERMINATED + "\n");
             }
-            else{
-                pw.write("$ " + processID +  "   " + singleProcess.status +  "\n");
+            else {
+                pw.write("$ " + processID + "   " + singleProcess.status + "\n");
             }
-            pw.flush();
         }
+        pw.write("ACK\n");
+        pw.flush();
     }
 
     public void resumeProcess(String[] args) throws IOException, ClassNotFoundException{
-        FileInputStream in = new FileInputStream(args[1] + ".obj");
+        FileInputStream in = new FileInputStream("/Users/hk/SD001/SDDSRMI/out/production/SDDSRMI/" + args[1] + ".obj");
         ObjectInputStream inObj = new ObjectInputStream(in);
-        SDMigratableProcess mpIn = (SDMigratableProcess)inObj.readObject();
+        MigratableProcesses mpIn = (MigratableProcesses)inObj.readObject();
         in.close();
         inObj.close();
         Thread newProcess = new Thread(mpIn);
+       // mpIn.set_migrate();
         SDProcessInfo processInfo = new SDProcessInfo(SDProcessStatus.RUNNING, mpIn);
         this.processTable.put(this.processID, processInfo);
         this.processID++;
         newProcess.start();
-        pw.print("resume successfully\n"); // ack signal
+        pw.print("ACK\n"); // ack signal
         pw.flush();
     }
 
@@ -144,19 +147,19 @@ public class SDSlaveNode {
         outObj.flush();
         outObj.close();
         out.close();
-        pw.print("suspending finished\n"); // ack signal
+        pw.print("ACK\n"); // ack signal
         pw.flush();
-        this.processTable.remove(processID);
+        this.processTable.remove(migratableProcessID);
     }
 
     public void startNewProcess(String[] args) throws ClassNotFoundException{
-        SDMigratableProcess newProcess = null;
+        MigratableProcesses newProcess = null;
         try {
             System.out.println(args[0] + " " + args[1] + " " + args[2]); // 1 inputFileName, 2 outputFileName
-            Class<SDMigratableProcess> newProcessClass = (Class<SDMigratableProcess>) Class.forName(SDMigratableProcess.class.getName());
+            Class<?> newProcessClass =  Class.forName(SDMigratableProcess.class.getName());
             Object[] processArgs = {Arrays.copyOfRange(args, 1, 3)}; // three parameter
             //System.out.println(processArgs[0] + " " + processArgs[1]);
-            newProcess = newProcessClass.getConstructor(String[].class).newInstance(processArgs);
+            newProcess = (MigratableProcesses)newProcessClass.getConstructor(String[].class).newInstance(processArgs);
         }
         catch (ClassNotFoundException e) {
             System.out.println("Could not find class " + args[2]);

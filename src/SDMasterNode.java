@@ -64,7 +64,7 @@ public class SDMasterNode {
                         try {
                             String line = slave.in.readLine();
                             if(line != null){
-                                System.out.println(line);
+                                System.out.println("node" + i + ":  " + line);
                             }
                         } catch (Exception e){
                             e.printStackTrace();

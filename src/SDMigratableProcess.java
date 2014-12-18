@@ -1,3 +1,4 @@
+import javax.sound.midi.SysexMessage;
 import java.io.*;
 
 public class SDMigratableProcess implements MigratableProcesses
@@ -26,15 +27,15 @@ public class SDMigratableProcess implements MigratableProcesses
     {
         InputStreamReader streamReader = new InputStreamReader(inFile);
         BufferedReader in = new BufferedReader(streamReader);
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(((outFile))));
+        DataOutputStream out = new DataOutputStream(((outFile)));
 
         try {
             while (!suspending) {
                 String line = in.readLine();
-                if (line == null) break;
+               // if (line == null) continue;
                // if (line.contains(query)) {
                 //System.out.println(line);
-                out.write(line);
+                out.writeBytes(line);
                 // System.out.println(line);
                // }
                 // Make grep take longer so that we don't require extremely large files for interesting results
@@ -51,9 +52,10 @@ public class SDMigratableProcess implements MigratableProcesses
         }
         suspending = false;
         finished = true;
-        //out.flush();
+
         try {
-            out.close();
+            out.flush();
+            //out.close();
         }
         catch (IOException ex){
             System.out.println("writing failure...");
@@ -65,11 +67,14 @@ public class SDMigratableProcess implements MigratableProcesses
     public void suspend()
     {
         suspending = true;
-        while (suspending);
+        while (suspending){
+            //System.out.println("**");
+        };
     }
 
     public boolean finished() {
         return this.finished;
     }
+
 
 }

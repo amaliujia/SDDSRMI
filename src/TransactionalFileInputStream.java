@@ -4,9 +4,9 @@ import java.io.*;
  * Created by amaliujia on 14-12-14.
  */
 public class TransactionalFileInputStream extends InputStream implements Serializable {
-
+    private static final long serialVersionUID = 568680122;
     private String fileName;
-    private RandomAccessFile randomAccessFile;
+    private transient RandomAccessFile randomAccessFile;
     private long offset;
     private boolean migratable;
 
@@ -19,7 +19,7 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
             System.err.println("Cannot find file " + this.fileName + " in file system");
             e.printStackTrace();
         } catch (IllegalArgumentException e){
-            System.err.println("illegal arguments");
+            System.err.println("Illegal arguments");
             e.printStackTrace();
         } catch (SecurityException e){
             System.err.println("Security problem");
@@ -32,18 +32,20 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
 
 
     public int read() throws IOException {
-        if(migratable){
-            this.randomAccessFile = new RandomAccessFile(this.fileName, "rws");
+        if(migratable || this.randomAccessFile == null ){
+            System.out.println("Read" + this.fileName);
+            this.randomAccessFile = new RandomAccessFile(this.fileName, "r");
             migratable = false;
-        }
+            offset -= 1000;
+            System.out.println(offset);
 
+        }
         int readBytes;
         this.randomAccessFile.seek(offset);
         readBytes = this.randomAccessFile.read();
         if(readBytes != -1){
            offset++;
         }
-
         return readBytes;
     }
 
@@ -63,6 +65,8 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
          }
          return false;
     }
+
+
 
     public long getOffset(){
         return offset;

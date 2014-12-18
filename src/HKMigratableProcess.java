@@ -74,5 +74,5 @@ public class HKMigratableProcess implements MigratableProcesses
     public boolean finished() {
         return this.finished;
     }
-
+    public void set_migrate(){}
 }

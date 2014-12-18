@@ -4,10 +4,10 @@
 
 public class SDProcessInfo {
 
-    public SDMigratableProcess process = null;
+    public MigratableProcesses process = null;
     public SDProcessStatus status = null;
 
-    public SDProcessInfo(SDProcessStatus status, SDMigratableProcess process){
+    public SDProcessInfo(SDProcessStatus status, MigratableProcesses process){
         this.status = status;
         this.process = process;
     }
