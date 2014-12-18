@@ -120,6 +120,8 @@ public class SDSlaveNode {
         this.processTable.put(this.processID, processInfo);
         this.processID++;
         newProcess.start();
+        pw.print("resume successfully\n"); // ack signal
+        pw.flush();
     }
 
     public void suspendProcess(String[] args) throws IOException{
@@ -175,7 +177,7 @@ public class SDSlaveNode {
             System.out.println("Instantiation Exception for " + args[2]);
             return;
         } catch (IllegalAccessException e) {
-            System.out.println("IIlegal access exception for " + args[2]);
+            System.out.println("Illegal access exception for " + args[2]);
             return;
         } catch (InvocationTargetException e) {
             System.out.println("Invocation target exception for " + args[2]);
