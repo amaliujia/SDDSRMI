@@ -34,10 +34,9 @@ public class SDSlaveNode {
 
     public void connect(){
         try{
-            socket = new Socket(masterAddress, masterPort, null, slavePort);
+            socket = new Socket(masterAddress, masterPort);
             bs = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-
         }
         catch(IOException ex) {
             System.out.println("MasterAddress or MasterPort is wrong");
@@ -63,23 +62,22 @@ public class SDSlaveNode {
         String[] args = null;
         String command = null;
         System.out.println("Service start...");
+       // int count = 0;
         while(true){
             try {
                 System.out.println("Waiting...");
                 command = bs.readLine();
-                if (command == null){
+                if (command == null) {
                     System.out.println("Interrupt!");
                     System.exit(0);
                 }
-             //   System.out.println("Waiting...");
-                System.out.println(command);
+          //      count++;
             }
             catch(IOException ex) {
                 System.out.println("Exit!");
                     System.exit(0);
             }
             args = command.split(" ");
-            System.out.println(args[0]);
             if (args[0].equals("ps")){
                 printState(args);
             }
@@ -93,8 +91,9 @@ public class SDSlaveNode {
                 System.out.println("Successfully start a new process");
                 startNewProcess(args);
             }
-
+      //      System.out.println(count);
         }
+
     }
 
     public void printState(String[] args){
@@ -111,7 +110,7 @@ public class SDSlaveNode {
     }
 
     public void resumeProcess(String[] args) throws IOException, ClassNotFoundException{
-        FileInputStream in = new FileInputStream(args[1] + args[2] + args[3] + ".obj");
+        FileInputStream in = new FileInputStream(args[1] + ".obj");
         ObjectInputStream inObj = new ObjectInputStream(in);
         SDMigratableProcess mpIn = (SDMigratableProcess)inObj.readObject();
         in.close();
@@ -151,7 +150,7 @@ public class SDSlaveNode {
     public void startNewProcess(String[] args) throws ClassNotFoundException{
         SDMigratableProcess newProcess = null;
         try {
-            System.out.println(args[0] + " " + args[1] + " " + args[2]);
+            System.out.println(args[0] + " " + args[1] + " " + args[2]); // 1 inputFileName, 2 outputFileName
             Class<SDMigratableProcess> newProcessClass = (Class<SDMigratableProcess>) Class.forName(SDMigratableProcess.class.getName());
             Object[] processArgs = {Arrays.copyOfRange(args, 1, 3)}; // three parameter
             //System.out.println(processArgs[0] + " " + processArgs[1]);
