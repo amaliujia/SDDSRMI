@@ -94,13 +94,15 @@ public class SDMasterNode {
                     promptPrinter("start");
                     continue;
                 }else{
+                    // start slaveID processID
                     SDSlave slave = this.slaveList.get(slaveID);
                     PrintWriter out = slave.getWriter();
-                    out.write("start " + SDUtil.inputFilePath + " " + SDUtil.outputFilePath + "\n");
+                    out.write("start " + SDUtil.inputFilePath[Integer.parseInt(args[2])] + " " +
+                                        SDUtil.outputFilePath[Integer.parseInt(args[2])] + "\n");
                     out.flush();
                 }
 
-            }else if(args[0].equals("miga")){
+            }else if(args[0].equals("miga")){ //miga slaveID processID slaveID
                 if(args.length > 3){
                     promptPrinter("help");
                     continue;
