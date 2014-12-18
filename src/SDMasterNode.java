@@ -101,16 +101,39 @@ public class SDMasterNode {
                 }
 
             }else if(args[0].equals("miga")){
+                if(args.length > 3){
+                    promptPrinter("help");
+                    continue;
+                }
+                int ida = Integer.parseInt(args[1]);
+                int idb = Integer.parseInt(args[3]);
+
+                SDSlave slave = slaveList.get(ida);
+                slave.out.println("suspend " + args[2]);
+                slave.out.flush();
+
+                try{
+                    String line = slave.in.readLine();
+                    if(line == null){
+                        SDUtil.fatalError("Greatly disaster");
+                    }
+                    if(line.equals("ACK")){
+                        slave = slaveList.get(idb);
+                        slave.out.println("resume " + args[2]);
+                        slave.out.flush();
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
 
             }else if(args[0].equals("test")){
                 int i = 0;
                 SDSlave slave = slaveList.get(0);
-                while(i < 10){
+                while(i < 5){
                     slave.out.write(i + "\n");
                     i++;
-                    slave.out.flush();
                 }
-
+                slave.out.flush();
             }else{
                 promptPrinter("help");
                 continue;
