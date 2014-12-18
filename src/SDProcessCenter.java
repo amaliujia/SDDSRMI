@@ -14,9 +14,9 @@ public class SDProcessCenter {
             //start master
             SDMasterNode master = new SDMasterNode();
             master.startService(defaultPort);
-        }else if(args.length == 2){
+        }else if(args.length == 3){
             //start salve
-            SDSlaveNode slave = new SDSlaveNode(args[0], Integer.parseInt(args[1]));
+            SDSlaveNode slave = new SDSlaveNode(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
             slave.connect();
             slave.slaveService();
         }else{

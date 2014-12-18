@@ -18,15 +18,23 @@ public class SDSlaveNode {
     private Socket socket;
     private TreeMap<Integer, SDProcessInfo> processTable = new TreeMap<Integer, SDProcessInfo>();
     private int processID;
-
+    private String localHost;
+    private int slavePort;
     public SDSlaveNode(String masterAddress, int masterPort){
         this.masterAddress = masterAddress;
         this.masterPort = masterPort;
     }
 
+    public SDSlaveNode(String masterAddress, int masterPort, int slavePort){
+        this.masterAddress = masterAddress;
+        this.masterPort = masterPort;
+        this.localHost = localHost;
+        this.slavePort = slavePort;
+    }
+
     public void connect(){
         try{
-            socket = new Socket(masterAddress, masterPort);
+            socket = new Socket(masterAddress, masterPort, null, slavePort);
             bs = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
@@ -63,7 +71,7 @@ public class SDSlaveNode {
                     System.out.println("Interrupt!");
                     System.exit(0);
                 }
-                System.out.println("Waiting...");
+             //   System.out.println("Waiting...");
                 System.out.println(command);
             }
             catch(IOException ex) {
