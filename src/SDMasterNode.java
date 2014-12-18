@@ -103,7 +103,7 @@ public class SDMasterNode {
                 }
 
             }else if(args[0].equals("miga")){ //miga slaveID processID slaveID
-                if(args.length > 3){
+                if(args.length > 4){
                     promptPrinter("help");
                     continue;
                 }
