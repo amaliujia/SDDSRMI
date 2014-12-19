@@ -98,18 +98,22 @@ public class SDSlaveNode {
     }
 
     public void printState(String[] args){
+        String line = "";
         for (Integer processID : processTable.keySet()){
             SDProcessInfo singleProcess = processTable.get(processID);
             if (singleProcess.process.finished()){
-                pw.write("$ " + processID +  "   " + SDProcessStatus.TERMINATED + "\n");
+                line += "$ " + processID +  "   " + SDProcessStatus.TERMINATED + "      ";
+
             }
             else {
-                pw.write("$ " + processID + "   " + singleProcess.status + "\n");
+                line += "$ " + processID + "   " + singleProcess.status + "     ";
             }
         }
-        //pw.write("ACK\n");
         if (processTable.isEmpty()){
             pw.write("$ no process" + "\n");
+        }
+        else {
+            pw.write(line + "\n");
         }
         pw.flush();
     }
