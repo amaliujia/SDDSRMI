@@ -121,6 +121,7 @@ public class SDMasterNode {
                     }
                     if(line.equals("ACK")){
                         slave = slaveList.get(idb);
+                        Thread.sleep(2000);
                         slave.out.println("resume " + args[2]);
                         slave.out.flush();
                     }
