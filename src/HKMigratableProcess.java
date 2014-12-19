@@ -71,6 +71,12 @@ public class HKMigratableProcess implements MigratableProcesses
         while (suspending);
     }
 
+    public void resume()
+    {
+        suspending = false;
+    }
+
+    public void finish(){}
     public boolean finished() {
         return this.finished;
     }

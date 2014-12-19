@@ -28,15 +28,21 @@ public class SDMigratableProcess implements MigratableProcesses
         InputStreamReader streamReader = new InputStreamReader(inFile);
         BufferedReader in = new BufferedReader(streamReader);
         DataOutputStream out = new DataOutputStream(((outFile)));
-
+        if (outFile == null){
+            System.err.println("Error!");
+        }
         try {
             while (!suspending) {
+
                 String line = in.readLine();
                // if (line == null) continue;
                // if (line.contains(query)) {
-                //System.out.println(line);
-                out.writeBytes(line);
-                // System.out.println(line);
+               // System.out.println(line);
+                if (line == null){
+                    break;
+                }
+                 out.writeBytes(line);
+                 out.writeBytes("\n");
                // }
                 // Make grep take longer so that we don't require extremely large files for interesting results
                 try {
@@ -50,9 +56,12 @@ public class SDMigratableProcess implements MigratableProcesses
         } catch (IOException e) {
             System.out.println ("SDProcess: Error: " + e);
         }
+        while(suspending && !finished){
+          //  System.out.print(suspending);
+            System.out.println("10");
+        }
         suspending = false;
         finished = true;
-
         try {
             out.flush();
             //out.close();
@@ -62,6 +71,10 @@ public class SDMigratableProcess implements MigratableProcesses
         }
         //outFile.closeFileStream();
         System.out.println("finish writing...");
+    }
+
+    public void resume() {
+        suspending = false;
     }
 
     public void suspend()
@@ -74,15 +87,18 @@ public class SDMigratableProcess implements MigratableProcesses
             e.printStackTrace();
         }
 
+       /* while (suspending){
 
-        while (suspending){
-            //System.out.println("**");
-        };
+        };*/
+    }
+
+    public void finish(){
+        this.finished = true;
     }
 
     private void close() throws IOException {
-        inFile.close();
-        outFile.close();
+        inFile.closeFileStream();
+        outFile.closeFileStream();
         inFile.setMigaratable(true);
         outFile.setMigaratable(true);
     }

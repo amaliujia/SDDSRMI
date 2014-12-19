@@ -15,6 +15,9 @@ public interface MigratableProcesses extends Runnable, Serializable{
     // check if this process finished
     public boolean finished();
 
+    public abstract void resume();
+
+    public abstract void finish();
   //  public void set_migrate();
 
 }

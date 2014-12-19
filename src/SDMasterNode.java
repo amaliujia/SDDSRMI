@@ -123,6 +123,19 @@ public class SDMasterNode {
                         slave = slaveList.get(idb);
                         slave.out.println("resume " + args[2]);
                         slave.out.flush();
+
+                        try{
+                            line = slave.in.readLine();
+                            if(line == null){
+                                SDUtil.fatalError("Greatly disaster");
+                            }
+                            if(line.equals("ACK")){
+
+                                System.out.println("Migrate successfully!");
+                            }
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 } catch (Exception e){
                     e.printStackTrace();
