@@ -107,23 +107,27 @@ public class SDSlaveNode {
                 pw.write("$ " + processID + "   " + singleProcess.status + "\n");
             }
         }
-        pw.write("ACK\n");
+        //pw.write("ACK\n");
+        if (processTable.isEmpty()){
+            pw.write("$ no process" + "\n");
+        }
         pw.flush();
     }
 
     public void resumeProcess(String[] args) throws IOException, ClassNotFoundException{
-        FileInputStream in = new FileInputStream("/Users/hk/SD001/SDDSRMI/out/production/SDDSRMI/" + args[1] + ".obj");
+        FileInputStream in = new FileInputStream("/Users/hk/SD001/SDDSRMI/out/production/SDDSRMI/" + "0" + ".obj");
         ObjectInputStream inObj = new ObjectInputStream(in);
         MigratableProcesses mpIn = (MigratableProcesses)inObj.readObject();
         in.close();
         inObj.close();
+        mpIn.resume();
         Thread newProcess = new Thread(mpIn);
        // mpIn.set_migrate();
         SDProcessInfo processInfo = new SDProcessInfo(SDProcessStatus.RUNNING, mpIn);
         this.processTable.put(this.processID, processInfo);
         this.processID++;
         newProcess.start();
-        pw.print("ACK\n"); // ack signal
+        pw.write("ACK\n"); // ack signal
         pw.flush();
     }
 
@@ -142,8 +146,8 @@ public class SDSlaveNode {
             System.err.print("process not found! Please check.");
         }
         processInfo.process.suspend();
+       // System.out.print("s");
         processInfo.status = SDProcessStatus.SUSPENDING;
-
 
         FileOutputStream out = new FileOutputStream(args[1] + ".obj");
         ObjectOutputStream outObj = new ObjectOutputStream(out);
@@ -151,11 +155,12 @@ public class SDSlaveNode {
         outObj.flush();
         outObj.close();
         out.close();
-
-        pw.print("ACK\n"); // ack signal
+        processInfo.process.finish();
+        pw.write("ACK\n"); // ack signal
         pw.flush();
 
         this.processTable.remove(migratableProcessID);
+
     }
 
     public void startNewProcess(String[] args) throws ClassNotFoundException{

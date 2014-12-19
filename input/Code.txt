@@ -1,137 +1,54 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
-{\fonttbl\f0\fnil\fcharset0 Menlo-Italic;\f1\fnil\fcharset0 Menlo-Bold;\f2\fnil\fcharset0 Menlo-Regular;
-\f3\fnil\fcharset0 Menlo-BoldItalic;}
-{\colortbl;\red255\green255\blue255;\red128\green128\blue128;\red0\green0\blue128;\red102\green14\blue122;
-\red0\green0\blue255;\red0\green128\blue0;}
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red38\green38\blue38;}
 \margl1440\margr1440\vieww10800\viewh8400\viewkind0
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\deftab720
+\pard\pardeftab720\sl340
 
-\f0\i\fs24 \cf2 /**\uc0\u8232  * Created by kanghuang on 12/17/14.\u8232  */\u8232 
-\f1\i0\b \cf3 import 
-\f2\b0 \cf0 java.io.*;\uc0\u8232 \u8232 
-\f1\b \cf3 public class 
-\f2\b0 \cf0 HKMigratableProcess 
-\f1\b \cf3 implements 
-\f2\b0 \cf0 MigratableProcesses\uc0\u8232 \{\u8232     
-\f1\b \cf3 private 
-\f2\b0 \cf0 TransactionalFileInputStream  
-\f1\b \cf4 inFile
-\f2\b0 \cf0 ;\uc0\u8232     
-\f1\b \cf3 private 
-\f2\b0 \cf0 TransactionalFileOutputStream 
-\f1\b \cf4 outFile
-\f2\b0 \cf0 ;\uc0\u8232     
-\f1\b \cf3 private 
-\f2\b0 \cf0 String 
-\f1\b \cf4 query
-\f2\b0 \cf0 ;\uc0\u8232     
-\f1\b \cf3 private boolean \cf4 finished
-\f2\b0 \cf0 ;\uc0\u8232 \u8232     
-\f1\b \cf3 private volatile boolean \cf4 suspending
-\f2\b0 \cf0 ;\uc0\u8232 \u8232     
-\f1\b \cf3 public 
-\f2\b0 \cf0 HKMigratableProcess(String args[]) 
-\f1\b \cf3 throws 
-\f2\b0 \cf0 Exception\uc0\u8232     \{\u8232       
-\f0\i \cf2 /*  if (args.length != 3) \{\uc0\u8232             System.out.println("usage: SDProcess <queryString> <inputFile> <outputFile>");\u8232             throw new Exception("Invalid Arguments");\u8232         \}\u8232 */\u8232         // query = args[0];\u8232         
-\f1\i0\b \cf4 inFile 
-\f2\b0 \cf0 = 
-\f1\b \cf3 new 
-\f2\b0 \cf0 TransactionalFileInputStream(args[\cf5 0\cf0 ]);\uc0\u8232         
-\f1\b \cf4 outFile 
-\f2\b0 \cf0 = 
-\f1\b \cf3 new 
-\f2\b0 \cf0 TransactionalFileOutputStream(args[\cf5 1\cf0 ], 
-\f1\b \cf3 false
-\f2\b0 \cf0 );\uc0\u8232         
-\f1\b \cf4 finished 
-\f2\b0 \cf0 = 
-\f1\b \cf3 false
-\f2\b0 \cf0 ;\uc0\u8232     \}\u8232 \u8232     
-\f1\b \cf3 public void 
-\f2\b0 \cf0 run()\uc0\u8232     \{\u8232         InputStreamReader streamReader = 
-\f1\b \cf3 new 
-\f2\b0 \cf0 InputStreamReader(
-\f1\b \cf4 inFile
-\f2\b0 \cf0 );\uc0\u8232         BufferedReader in = 
-\f1\b \cf3 new 
-\f2\b0 \cf0 BufferedReader(streamReader);\uc0\u8232         BufferedWriter out = 
-\f1\b \cf3 new 
-\f2\b0 \cf0 BufferedWriter(
-\f1\b \cf3 new 
-\f2\b0 \cf0 OutputStreamWriter(((
-\f1\b \cf4 outFile
-\f2\b0 \cf0 ))));\uc0\u8232 \u8232         
-\f1\b \cf3 try 
-\f2\b0 \cf0 \{\uc0\u8232             
-\f1\b \cf3 while 
-\f2\b0 \cf0 (!
-\f1\b \cf4 suspending
-\f2\b0 \cf0 ) \{\uc0\u8232                 String line = in.readLine();\u8232                 
-\f1\b \cf3 if 
-\f2\b0 \cf0 (line == 
-\f1\b \cf3 null
-\f2\b0 \cf0 ) 
-\f1\b \cf3 break
-\f2\b0 \cf0 ;\uc0\u8232                 
-\f0\i \cf2 // if (line.contains(query)) \{\uc0\u8232                 //System.out.println(line);\u8232                 
-\f2\i0 \cf0 out.write(line);\uc0\u8232                 
-\f0\i \cf2 // System.out.println(line);\uc0\u8232                 // \}\u8232                 // Make grep take longer so that we don't require extremely large files for interesting results\u8232                 
-\f1\i0\b \cf3 try 
-\f2\b0 \cf0 \{\uc0\u8232                     Thread.
-\f0\i sleep
-\f2\i0 (\cf5 800\cf0 );\uc0\u8232                 \} 
-\f1\b \cf3 catch 
-\f2\b0 \cf0 (InterruptedException e) \{\uc0\u8232                     
-\f0\i \cf2 // ignore it\uc0\u8232                 
-\f2\i0 \cf0 \}\uc0\u8232             \}\u8232         \} 
-\f1\b \cf3 catch 
-\f2\b0 \cf0 (EOFException e) \{\uc0\u8232             
-\f0\i \cf2 //End of File\uc0\u8232         
-\f2\i0 \cf0 \} 
-\f1\b \cf3 catch 
-\f2\b0 \cf0 (IOException e) \{\uc0\u8232             System.
-\f3\i\b \cf4 out
-\f2\i0\b0 \cf0 .println (
-\f1\b \cf6 "SDProcess: Error: " 
-\f2\b0 \cf0 + e);\uc0\u8232         \}\u8232         
-\f1\b \cf4 suspending 
-\f2\b0 \cf0 = 
-\f1\b \cf3 false
-\f2\b0 \cf0 ;\uc0\u8232         
-\f1\b \cf4 finished 
-\f2\b0 \cf0 = 
-\f1\b \cf3 true
-\f2\b0 \cf0 ;\uc0\u8232         
-\f0\i \cf2 //out.flush();\uc0\u8232         
-\f1\i0\b \cf3 try 
-\f2\b0 \cf0 \{\uc0\u8232             out.close();\u8232         \}\u8232         
-\f1\b \cf3 catch 
-\f2\b0 \cf0 (IOException ex)\{\uc0\u8232             System.
-\f3\i\b \cf4 out
-\f2\i0\b0 \cf0 .println(
-\f1\b \cf6 "writing failure..."
-\f2\b0 \cf0 );\uc0\u8232         \}\u8232         
-\f0\i \cf2 //outFile.closeFileStream();\uc0\u8232         
-\f2\i0 \cf0 System.
-\f3\i\b \cf4 out
-\f2\i0\b0 \cf0 .println(
-\f1\b \cf6 "finish writing..."
-\f2\b0 \cf0 );\uc0\u8232     \}\u8232 \u8232     
-\f1\b \cf3 public void 
-\f2\b0 \cf0 suspend()\uc0\u8232     \{\u8232         
-\f1\b \cf4 suspending 
-\f2\b0 \cf0 = 
-\f1\b \cf3 true
-\f2\b0 \cf0 ;\uc0\u8232         
-\f1\b \cf3 while 
-\f2\b0 \cf0 (
-\f1\b \cf4 suspending
-\f2\b0 \cf0 );\uc0\u8232     \}\u8232 \u8232     
-\f1\b \cf3 public boolean 
-\f2\b0 \cf0 finished() \{\uc0\u8232         
-\f1\b \cf3 return this
-\f2\b0 \cf0 .
-\f1\b \cf4 finished
-\f2\b0 \cf0 ;\uc0\u8232     \}\u8232 \u8232 \}\
+\f0\fs28 \cf2 -------------------------Once again---------------------------\
+What if there was no lie?\
+Nothin' wrong, nothin' right\
+What if there was no time\
+And no reason or rhyme?\
+\
+What if you should decide\
+That you don't want me there by your side\
+That you don't want me there in your life?\
+\
+What if I got it wrong?\
+And no poem or song\
+Could put right what I got wrong\
+Or make you feel I belong\
+\
+What if you should decide\
+That you don't want me there by your side\
+That you don't want me there in your life?\
+\
+Ooh, that's right\
+Let's take a breath, jump over the side\
+Ooh, that's right\
+How can you know it if you don't even try?\
+Ooh, that's right\
+\
+Every step that you take\
+Could be your biggest mistake\
+It could bend or it could break\
+But that's the risk that you take\
+\
+What if you should decide\
+That you don't want me there in your life\
+That you don't want me there by your side?\
+\
+Ooh, that's right\
+Let's take a breath, jump over the side\
+Ooh, that's right\
+How can you know it when you don't even try?\
+Ooh, that's right\
+\
+Ooh, that's right\
+Let's take a breath, jump over the side\
+Ooh, that's right\
+You know that darkness always turns into light\
+Ooh, that's right\
+----------------------end\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97*\
 }

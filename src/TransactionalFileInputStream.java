@@ -36,9 +36,8 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
             System.out.println("Read" + this.fileName);
             this.randomAccessFile = new RandomAccessFile(this.fileName, "r");
             migratable = false;
-            offset -= 1000;
+            offset -= 2000;
             System.out.println(offset);
-
         }
         int readBytes;
         this.randomAccessFile.seek(offset);
