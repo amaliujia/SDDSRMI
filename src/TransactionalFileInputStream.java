@@ -2,6 +2,8 @@ import java.io.*;
 
 /**
  * Created by amaliujia on 14-12-14.
+ * CND OFFSET 不减1000会莫名其妙的停止增长
+ *
  */
 public class TransactionalFileInputStream extends InputStream implements Serializable {
     private static final long serialVersionUID = 568680122;
@@ -36,7 +38,12 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
             System.out.println("Read" + this.fileName);
             this.randomAccessFile = new RandomAccessFile(this.fileName, "r");
             migratable = false;
-            offset -= 2000;
+            /***
+             * to do list OFFSET 不减1000会莫名其妙的停止增长
+             */
+            if (offset > 1000)
+              offset -= 1000;
+
             System.out.println(offset);
         }
         int readBytes;
