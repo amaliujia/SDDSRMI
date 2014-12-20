@@ -103,7 +103,6 @@ public class SDSlaveNode {
             SDProcessInfo singleProcess = processTable.get(processID);
             if (singleProcess.process.finished()){
                 line += "$ " + processID +  "   " + SDProcessStatus.TERMINATED + "      ";
-
             }
             else {
                 line += "$ " + processID + "   " + singleProcess.status + "     ";
